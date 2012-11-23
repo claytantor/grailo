@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+{# this is a tag to allow Mustache.js to work along side django templates #}
+{# see gist https://gist.github.com/975505 #}
+{% load django_mustache  %}
+{% include 'head.html' %}
+<style type="text/css">
+    body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+    }
+
+</style>
+{% django_mustache %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        //get the user
+        $('#btn_lookup_user').click(function() {
+            $('#found_user_area').hide();
+
+            var uname =$('#id_username').val();
+            if(uname){
+                $.ajax({
+                    url: "uname.json?uname="+uname,
+                    dataType: 'json'
+                }).done(function(ajaxResult) {
+                    if(! ajaxResult.error){
+                        $('#ajax_message').html('');
+                        $('#public_key').html(ajaxResult.public_key);
+                        $('#id_encrypted_pw').val(ajaxResult.pw_encrypted);
+                        loadCanvas('avatar_canvas', ajaxResult.avatar_img);
+                        $('#found_user_area').show();
+                    } else {
+                        $('#ajax_message').html(Mustache.render('<div class="alert alert-error"><strong>[[ error ]]</strong> [[ message ]]</div>',ajaxResult));
+                    }
+
+                });
+
+            } else {
+
+                var model = {error:"USER NAME REQUIRED",
+                    message:"You need to enter the username that you would like to login as to begin."};
+
+                $('#ajax_message').html(
+                        Mustache.render(
+                                '<div class="alert alert-error"><strong>[[ error ]]</strong> ' +
+                                        '[[ message ]]</div>',model));
+
+
+            }
+
+            return false;
+        });
+
+        //signin
+        $('#btn_signin').click(function() {
+
+            if($('#id_private_key').val()){
+                $('#ajax_message').html('');
+                var rsakey = cryptico.generateRSAKey($('#id_private_key').val(), 1024);
+                var decryptionResult = cryptico.decrypt($('#id_encrypted_pw').val(), rsakey);
+                $('#id_password').val(decryptionResult.plaintext);
+                $('#login_form').submit();
+
+            } else {
+                var model = {error:"NO PRIVATE KEY",
+                    message:"You need to enter the client side private key for this user to login."};
+                $('#ajax_message').html(
+                        Mustache.render(
+                                '<div class="alert alert-error"><strong>[[ error ]]</strong> ' +
+                                        '[[ message ]]</div>',model));
+            }
+
+            return false;
+        });
+
+    });
+</script>
+{% end_django_mustache %}
+<body>
+
+
+<div class="container">
+
+    <form class="form-signin" action="login.html" method="post" id="login_form">{% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <div id="ajax_message"></div>
+        <div class="input-append">
+            <input placeholder="User handle" name="username" id="id_username" type="text">
+            <button class="btn" type="button" id="btn_lookup_user">Lookup!</button>
+        </div>
+        <div id="found_user_area" style="display: none;">
+            <div id="public_key" style="display:none;"></div>
+            <input type="hidden" name="encrypted_pw" id="id_encrypted_pw"/>
+            <input type="hidden" name="password" id="id_password"/>
+            <canvas id="avatar_canvas" width="300" height="300"></canvas>
+            <textarea placeholder="Enter your private key" style="height:80px; width: 290px;" name="private_key" id="id_private_key"></textarea>
+            <a href="#" class="btn btn-large btn-primary" id="btn_signin">Sign in</a>
+        </div>
+
+    </form>
+    <div style="text-align: center;">Don't have an account yet? <a href="register.html">Register now!</a></div>
+
+</div> <!-- /container -->
+
+{% include 'footer.html' %}
+
+</body>
+</html>

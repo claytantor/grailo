@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+
+
+<style type="text/css">
+
+    body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+    }
+
+    canvas {
+        display:none;
+    }
+
+</style>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+
+    $('#action_generate').click(function(){
+
+        $.when( getUsername(), generateUser($('#private_key').val()) )
+        .then(function( ajaxResult ){
+            $('#gen_result_area').show();
+            Canvas.newAvatar();
+            $('#user_name').html('<h1 id="uname_val" data-uuid="'+ajaxResult[0].uuid+'"" data-uname="'+ajaxResult[0].uname+'">'+ajaxResult[0].uname+'</h1><span class="label label-important">Write this down too!</span>');
+            $('#user_name').show();
+        });
+
+        return false;
+    });
+
+    var initKey = GRAILO_Util.util.tokenGenerator()+
+            GRAILO_Util.util.tokenGenerator()+
+            GRAILO_Util.util.tokenGenerator()+
+            GRAILO_Util.util.tokenGenerator();
+
+    $('#private_key').val(initKey);
+
+
+    $('#img_alien_avatar').click(function(){
+        $('#avatar_area').hide('slow');
+        $.ajax({
+            url: 'uname.json',
+            dataType: "json",
+            success: function(data) {
+                $('#user_name').hide();
+                Canvas.newAvatar();
+                $('#user_name').html('<h1 id="uname_val" data-uuid="'+data.uuid+'"" data-uname="'+data.uname+'">'+data.uname+'</h1><span class="label label-important">Write this down too!</span>');
+                $('#user_name').show();
+                $('#avatar_area').show('slow');
+            }
+        });
+    });
+
+    $('#btn_register').click(function(){
+        //set the form fields
+        var uname = $('#uname_val').data('uname');
+        var uuid = $('#uname_val').data('uuid');
+
+        var public_key = $('#public_key').val();
+
+        //set avatar data
+        var imageData = Canvas.el.dom.toDataURL("image/png");
+
+        $('#id_handel').val(uname);
+        $('#id_public_key').val(public_key);
+        $('#id_avatar_img').val(imageData);
+        $('#id_pw_unencrypted').val(uuid);
+        encryptPassword(uuid, public_key, $('#register_form')[0]);
+        $('#register_form').submit();
+
+        return false;
+    });
+
+});
+
+</script>
+<body>
+
+<form action="register.html" method="post" id="register_form">{% csrf_token %}
+    {{ form.handel }}
+    {{ form.public_key }}
+    {{ form.pw_encrypted }}
+    {{ form.pw_unencrypted }}
+    {{ form.avatar_img }}
+</form>
+
+<div class="container">
+    <div class="user-generator">
+
+        {% if form.errors %}
+            <div class="alert alert-error"><h4>Errors</h4> {{ form.errors }}</div>
+        {% endif %}
+
+        <div style="margin: 10px auto; display: inline;">
+            <div style="text-align:left;display: inline-block; width: 70%"><span style="font-size: 2.0em; font-weight: bold;">Generate User</span></div>
+        </div>
+
+        <div style="margin-top: 10px;">
+
+            <div class="alert alert-info"><strong>Super Important!</strong> We generate your Grailo user from a private key. Your username and private key is the only way for
+                you to log into Grailo. Gralio.net does not have any way to retrieve your private key if you loose
+                it so make sure to keep it in a safe place. If you loose your private key you will need to create
+                a new user account.</div>
+
+            <div style="margin: 10px auto; display: inline;">
+                <div style="text-align:left;display: inline-block; width: 70%;"><span style="font-size: 1.4em; font-weight: bold;">User Private Key</span></div>
+                <div class="btn-group"  style="text-align:right;display: inline-block;">
+                    <button class="btn btn-mini active">Unique Key</button>
+                    <button class="btn btn-mini">Pass Phrase</button>
+                </div>
+            </div>
+            <div>
+            <div class="progress" style="margin-top: 10px;">
+                <div class="bar bar-danger" style="width: 40%;"></div>
+                <div class="bar bar-warning" style="width: 35%;"></div>
+                <div class="bar bar-success" style="width: 25%;"></div>
+            </div>
+            <span class="label label-important">Will NOT be saved on server. Write this down!</span>
+            <textarea rows="4" wrap="hard" style="width:100%;" id="private_key">I am an agent implanted into your unconscious.</textarea>
+            </div>
+        </div>
+
+        <div style="margin: 10px auto; display: inline;">
+            <div style="text-align:right; display: inline-block; width: 100%">
+                <input type="button" name="generate" value="Generate" id="action_generate" class="btn">
+                <input type="button" name="cancel" value="Cancel" onClick="cancelTest()" class="btn btn-danger">
+            </div>
+        </div>
+
+    </div>
+
+    <div id="gen_result_area"  class="key-result" style="display:none;">
+        <div id="avatar_box" class="avatar_box">
+        <div id="avatar_area">
+            <img id="img_alien_avatar" class="alien-avatar" role="result" title="Alien Avatar"/>
+        </div>
+        </div>
+        <div class="uname-large" id="user_name"></div>
+        <div id="keygen_result" class="keygen-area"></div>
+        <div  id="btn_register">
+            <div class="label label-important">Did you put your private key and user name in a safe place?</div>
+            <div style="margin-top: 5px;"><a class="btn btn-large btn-success" href="#" >Register User</a></div>
+        </div>
+
+    </div>
+
+
+
+
+</div> <!-- /container -->
+<div style="display: none;"><canvas id="random_avatar" style="display: none;"></canvas></div>
+<script src="{{ STATIC_URL }}js/alien-avatar-generator.js"></script>
+
+
+</body>
+</html>

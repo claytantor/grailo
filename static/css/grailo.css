@@ -1,0 +1,109 @@
+/*  user registration  */
+.keygen-area {
+    position: relative;
+    top: -50px;
+}
+
+#btn_register{
+    text-align: center;
+    position: relative;
+    top: -50px;}
+
+.uname-large{
+    position: relative;
+    top: -320px;
+    text-align: right;
+}
+
+.avatar_box{height: 300px; width: 300px;}
+
+.user-generator {
+    max-width: 600px;
+    padding: 19px 29px 29px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.form-register {
+    max-width: 600px;
+    padding: 19px 29px 29px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.form-register .form-register-heading,
+.form-register .checkbox {
+    margin-bottom: 10px;
+}
+.form-register input[type="text"] {
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;
+}
+
+.key-result {
+    max-width: 600px;
+    padding: 19px 29px 29px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.goaway {
+    position:absolute;
+    left:270px;
+    animation: goaway .425s 1 ease-out;
+}
+
+@keyframes goaway {
+    0% {}
+    100% {
+        opacity:0;
+        transform:translate(5em, -20em) rotateY(90deg) scale(.2);
+    }
+}
+
+/* sign in */
+.form-signin {
+    max-width: 400px;
+    text-align: center;
+    padding: 19px 29px 29px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+/*  home */
+.sidebar-nav {
+    padding: 9px 0;
+}

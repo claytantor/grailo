@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+<!-- Le styles -->
+<link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+<style type="text/css">
+    body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+    }
+
+        /* Custom container */
+    .container-narrow {
+        margin: 0 auto;
+        max-width: 700px;
+    }
+    .container-narrow > hr {
+        margin: 30px 0;
+    }
+
+    /* Main marketing message and sign up button */
+    .jumbotron {
+        margin: 60px 0;
+        text-align: center;
+    }
+    .jumbotron h1 {
+        font-size: 72px;
+        line-height: 1;
+    }
+    .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+    }
+
+        /* Supporting marketing content */
+    .marketing {
+        margin: 60px 0;
+    }
+    .marketing p + h4 {
+        margin-top: 28px;
+    }
+</style>
+
+<body>
+
+<div class="container-narrow">
+
+    <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+            <li class="active"><a href="index.html">Index</a></li>
+            {% if not request.user.is_authenticated %}<li><a href="home.html">Login</a></li>{% endif %}
+            {% if request.user.is_authenticated %}<li><a href="home.html">Home</a></li>{% endif %}
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+            {% if request.user.is_authenticated %}<li><a href="logout.html">Logout</a></li>{% endif %}
+        </ul>
+        <img src="{{ STATIC_URL }}images/icon-32-shadow.png" style="position: relative; top: -5px;">
+        <span style="color: #999;font-size: 1.8em; font-weight: bold;">Grailo</span> <span style="color: #ddd;font-size: 1.8em;  font-weight: bold;">Feeds</span>
+    </div>
+
+    <hr>
+
+    <div class="jumbotron">
+        <h1>Finally, micro blogging with real privacy.</h1>
+        <p class="lead">Grailo is the only social network that lets you choose the
+        level of privacy you want using <a target="_new" href="http://en.wikipedia.org/wiki/Public-key_cryptography">public/private key encryption.</a>  There are no
+        passwords, only keys that you share with others you trust. We hope to make
+            privacy on the internet simple and easy enough for everyone to use.</p>
+        <a class="btn btn-large btn-success" href="register.html">Sign up today!</a>
+    </div>
+
+    <hr>
+
+    <div class="row-fluid marketing">
+        <div class="span6">
+            <h4>Your choices.</h4>
+            <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+            <h4>Why Privacy?</h4>
+            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+            <h4>Simple</h4>
+            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+
+        <div class="span6">
+            <h4>Anonymous Accounts</h4>
+            <p>We dont require identifying information, so your account is as anonymous as you wish it to be.</p>
+
+            <h4>Subheading</h4>
+            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+            <h4>Subheading</h4>
+            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="footer">
+        <p>&copy; Company 2012</p>
+    </div>
+
+</div> <!-- /container -->
+{% include 'footer.html' %}
+
+</body>
+</html>
