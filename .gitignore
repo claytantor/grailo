@@ -73,3 +73,5 @@ nosetests.xml
 .idea/dataSources.xml
 
 .idea/dataSources.xml
+
+grailo/settings.py

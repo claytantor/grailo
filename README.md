@@ -9,9 +9,10 @@ The following projects heavily influenced this project and may have code include
 We stand on the sholders of giants.
 
 * [cryptico](https://github.com/claytantor/cryptico) - A javascript key generator.
-* [django-microblogging](https://github.com/skabber/django-microblogging/tree/master/microblogging)
-* [django-friends](https://github.com/jtauber/django-friends)
-* [django-icanhaz ](https://github.com/carljm/django-icanhaz)
+* [django-microblogging](https://github.com/skabber/django-microblogging/tree/master/microblogging) - simple microblogging
+* [django-friends](https://github.com/jtauber/django-friends) - friendship, contact and invitation management for the Django web framework
+* [django-icanhaz ](https://github.com/carljm/django-icanhaz) - Mustache.js template fixes
+* [django-atompub by James Tauber](http://code.google.com/p/django-atompub/)
 
 #Interesting Articles#
 The following articles have influenced decisions we have made and we think are interesting.

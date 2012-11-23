@@ -5,10 +5,8 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import stringfilter
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
-
 from django.contrib.contenttypes.models import ContentType
-
-from microblogging.models import Tweet, Following
+from feeds.models import Message, Following
 
 
 register = template.Library()
@@ -21,17 +19,17 @@ def make_user_link(text):
 
 
 @register.simple_tag
-def render_tweet_text(tweet):
-    text = escape(tweet.text)
+def render_message_text(message):
+    text = escape(message.text)
     text = user_ref_re.sub(make_user_link, text)
     return mark_safe(text)
 
 
 @register.inclusion_tag('microblogging/listing.html', takes_context=True)
-def tweet_listing(context, tweets, prefix_sender, are_mine):
+def message_listing(context, messages, prefix_sender, are_mine):
     request = context.get('request', None)
     sc = {
-        'tweets': tweets.select_related(depth=1),
+        'messages': messages.select_related(depth=1),
         'prefix_sender': prefix_sender,
         'are_mine': are_mine
     }
@@ -41,9 +39,9 @@ def tweet_listing(context, tweets, prefix_sender, are_mine):
 
 
 @register.inclusion_tag('microblogging/listing.html', takes_context=True)
-def sent_tweet_listing(context, user, prefix_sender, are_mine):
-    tweets = Tweet.objects.filter(sender_id=user.pk)
-    return tweet_listing(context, tweets, prefix_sender, are_mine)
+def sent_message_listing(context, user, prefix_sender, are_mine):
+    messages = Message.objects.filter(sender_id=user.pk)
+    return message_listing(context, messages, prefix_sender, are_mine)
 
 
 @register.simple_tag

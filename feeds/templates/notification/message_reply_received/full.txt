@@ -1,9 +1,2 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+{% load i18n %}{% blocktrans with message.sender as message_sender and message.text as message_text %}{{ message_sender }} sent you the following message reply:
+{{ message_text }}{% endblocktrans %}
