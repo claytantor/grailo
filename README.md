@@ -20,5 +20,5 @@ The following articles have influenced decisions we have made and we think are i
 
 #Thigs we do before we commit
 
-# $ pip freeze > requirements.txt
-# update example settings
+1. $ pip freeze > requirements.txt
+2. update example settings
