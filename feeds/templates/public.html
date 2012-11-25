@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load microblogging_tags %}
+
+{% block subnav %}
+    <ul>
+        <li><a href="{% url messages_you_follow %}">{% trans "Messages You Follow" %}</a></li>
+        <li><a href="{% url all_messages %}">{% trans "All Messages" %}</a></li>
+        <li><a href="{% url message_followers request.user %}">{% trans "Your Followers" %}</a></li>
+        <li><a href="{% url message_following request.user %}">{% trans "Who You Are Following" %}</a></li>
+    </ul>
+{% endblock %}
+
+{% block head_title %}{% blocktrans %}Public Messages{% endblocktrans %}{% endblock %}
+
+{% block extra_head %}
+    {# @@@ use url tag #}
+    <link rel="alternate" type="application/atom+xml" title="Messages Feed for all users" href="/feeds/messages/all/" />
+{% endblock %}
+
+{% block body %}
+    <h1>{% trans "All Messages" %}</h1>
+
+    <p>{% trans "These are messages from everyone:" %}</p>
+
+    {% message_listing messages 1 0 %}
+{% endblock %}

@@ -139,6 +139,10 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.tz",
                                "django.contrib.messages.context_processors.messages")
 
+AUTH_PROFILE_MODULE = 'feeds.userprofile'
+
+#GRAILO SETTINGS
+GRAILO_USER_WORDS = '/Users/claygraham/data/github/grailo/static/data/words_small.txt'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

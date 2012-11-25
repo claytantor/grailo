@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+{% load i18n %}
 {% load django_mustache  %}
 {% include 'head.html' %}
 <style type="text/css">
@@ -41,7 +42,7 @@
             {% include 'sidebar.html' %}
         </div><!--/span-->
         <div class="span10">
-
+            <div class="row-fluid">
                 <div class="span4">
                     <canvas id="avatar_canvas" width="300" height="300"></canvas>
                 </div>
@@ -50,15 +51,14 @@
                     <p>You are now ready to create feeds,  as well as follow and comment other user's feeds.
                         With privacy. While using Grailo you will need to enter keys to create feeds, as well
                         as decrypt and encrypt feeds locally, so keep them handy.</p>
-                    <p><a class="btn btn-primary btn-large">Create a feed! &raquo;</a></p>
+
+                    <a href="{% url templar_feeds %}" class="btn btn-large btn-primary" id="btn_signin">Create New Feed &raquo;</a>
+
                 </div>
-
+            </div>
             <div class="row-fluid">
+            </div>
 
-            </div><!--/row-->
-            <div class="row-fluid">
-
-            </div><!--/row-->
         </div><!--/span-->
     </div><!--/row-->
 

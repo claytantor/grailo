@@ -31,6 +31,32 @@ function getUsername(){
     return $.get('uname.json');
 }
 
+function decryptMessageHandler(event,ui) {
+    var message_img_clicked = event.data.message_img_clicked;
+
+
+    if($('#private_key').val()){
+        $('#errors_area').html('');
+
+        var cipherText = $(this).data('message-encrypted');
+
+        var rsaKey = cryptico.generateRSAKey($('#private_key').val(), 1024);
+        var decryptionResult = cryptico.decrypt(cipherText, rsaKey);
+        $(this).siblings('.message').find('.message_text').html(decryptionResult.plaintext);
+
+        $(message_img_clicked).find('img').attr("src",event.data.unlock_img);
+        $(message_img_clicked).unbind('click');
+
+
+    } else {
+        $('#errors_area').html('<div class="alert alert-error"><h4>Please enter the feed private key.</h4></div>');
+    }   $('#errors_area').show();
+
+    return false;
+}
+
+
+
 function loadCanvas(canvasName, dataURL) {
     var canvas = document.getElementById(canvasName);
     var context = canvas.getContext('2d');

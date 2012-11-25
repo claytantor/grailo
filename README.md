@@ -8,14 +8,17 @@ side is responsible for generating and managing keys. The server is the transpor
 The following projects heavily influenced this project and may have code included in Grailo. Please give props.
 We stand on the sholders of giants.
 
-* [cryptico](https://github.com/claytantor/cryptico) - A javascript key generator.
-* [django-microblogging](https://github.com/skabber/django-microblogging/tree/master/microblogging) - simple microblogging
-* [django-friends](https://github.com/jtauber/django-friends) - friendship, contact and invitation management for the Django web framework
+* [cryptico](https://github.com/claytantor/cryptico) - Javascript public/private key encryption.
 * [django-icanhaz ](https://github.com/carljm/django-icanhaz) - Mustache.js template fixes
-* [django-atompub by James Tauber](http://code.google.com/p/django-atompub/)
 
 #Interesting Articles#
 The following articles have influenced decisions we have made and we think are interesting.
 * [Atsushi Oka Titanium Core](http://ats.oka.nu/titaniumcore/js/crypto/readme.txt)
 * [Simple Authentication Backend](http://www.djangorocks.com/tutorials/creating-a-custom-authentication-backend/creating-a-simple-authentication-backend.html)
+* [django-microblogging](https://github.com/skabber/django-microblogging/tree/master/microblogging) - simple microblogging
+* [django-friends](https://github.com/jtauber/django-friends) - friendship, contact and invitation management for the Django web framework
 
+#Thigs we do before we commit
+
+# $ pip freeze > requirements.txt
+# update example settings

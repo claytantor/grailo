@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% blocktrans %}Single Message{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Single Message" %}</h1>
+
+    <p>
+        {% blocktrans with message.sender.username as message_sender %}
+            Here is a single message from {{ message_sender }}:
+        {% endblocktrans %}
+    </p>
+
+    <div class="message" id="t{{ message.id }}">
+        <a href="{{ message.sender.get_profile.get_absolute_url }}"><b>{{ message.sender }}</b></a>
+        {{ message.html|safe|urlize }}
+        <span class="timesince">{{ message.sent|timesince }} ago</span>
+        <a class="reply" href="{% url messages_you_follow %}?reply={{ message.sender }}">reply</a>
+    </div>
+
+{% endblock %}

@@ -93,6 +93,7 @@
         <div id="found_user_area" style="display: none;">
             <div id="public_key" style="display:none;"></div>
             <input type="hidden" name="encrypted_pw" id="id_encrypted_pw"/>
+            <input type="hidden" name="next" id="id_next" value="{{ request.GET.next }}"/>
             <input type="hidden" name="password" id="id_password"/>
             <canvas id="avatar_canvas" width="300" height="300"></canvas>
             <textarea placeholder="Enter your private key" style="height:80px; width: 290px;" name="private_key" id="id_private_key"></textarea>

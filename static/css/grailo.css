@@ -107,3 +107,45 @@
 .sidebar-nav {
     padding: 9px 0;
 }
+
+.grailo_message_field {width:100%;}
+
+/*  feeds */
+.form-create-feed {
+    max-width: 100%;
+    text-align: left;
+    padding: 5px 19px 19px 10px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    margin-bottom: 5px;
+}
+
+.fld_title_feed { width: 100%;}
+
+/* feed */
+.grailo_message{
+    max-width: 100%;
+    text-align: left;
+    padding: 5px 19px 19px 10px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    margin-bottom: 5px;
+}
+
+.grailo_message_part{ display: inline-block; margin: 5px; vertical-align: top;}
+.message_avatar_img{ width: 64px; height: 64px;}
+
+.message_username{ font-size: 1.2em; font-weight: bold;}
+.message_text{ font-size: 1.0em; width: 600px; }

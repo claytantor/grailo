@@ -1,0 +1,75 @@
+{% load i18n %}
+{% load microblogging_tags %}
+
+{% block subnav %}
+    <ul>
+        <li><a href="{% url messages_you_follow %}">{% trans "Messages You Follow" %}</a></li>
+        <li><a href="{% url all_messages %}">{% trans "All Messages" %}</a></li>
+        <li><a href="{% url message_followers request.user %}">{% trans "Your Followers" %}</a></li>
+        <li><a href="{% url message_following request.user %}">{% trans "Who You Are Following" %}</a></li>
+    </ul>
+{% endblock %}
+
+{% block head_title %}{% blocktrans %}Messages{% endblocktrans %}{% endblock %}
+
+{% block extra_head %}
+    <link rel="alternate" type="application/atom+xml" title="Messages Feed for User {{ user.username|capfirst }}" href="/feeds/messages/only/{{ user.username }}/" />
+    <link rel="alternate" type="application/atom+xml" title="Messages Feed for User {{ user.username|capfirst }} and friends" href="/feeds/messages/with_friends/{{ user.username }}/" />
+{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Messages" %}</h1>
+
+    <form method="POST" action="{% url messages_you_follow %}">{% csrf_token %}
+        <p>{% trans "What are you doing?" %}</p>
+        {{ form.as_p }}
+
+        <p>
+            <span id="chars_left"></span> {% trans "chars left." %}
+            <input type="submit" value="{% trans "post" %}">
+        </p>
+    </form>
+
+    <p>{% blocktrans with user.followed.count as follow_count and user.followed.count|pluralize:_("person,people") as follow_name %}
+        These are messages from the {{ follow_count }} {{ follow_name }} you are following (plus your own){% endblocktrans %}:
+    </p>
+
+    {% message_listing messages 1 0 %}
+
+{% endblock %}
+
+{% block extra_body %}
+    <script>
+        $(document).ready(function() {
+            function update_chars_left() {
+                var max_len = 140;
+                var textarea = $('#new_message')[0];
+                var message_len = textarea.value.length;
+                if (message_len >= max_len) {
+                    textarea.value = textarea.value.substring(0, max_len); // truncate
+                    $('#chars_left').html("0");
+                } else {
+                    $('#chars_left').html(max_len - message_len);
+                }
+            }
+            $('#new_message').keyup(function() {
+                update_chars_left();
+            });
+            update_chars_left();
+            $('#new_message').focus();
+            {% if reply %}
+                var offset = {{ reply|length }} + 2;
+                var textarea = $('#new_message')[0];
+                if (textarea.setSelectionRange) { // Safari, Firefox
+                    textarea.setSelectionRange(offset, offset);
+                } else if (textarea.createTextRange) { // IE
+                    var range = textarea.createTextRange();
+                    range.collapse(true);
+                    range.moveEnd('character', offset);
+                    range.moveStart('character', offset);
+                    range.select();
+                }
+            {% endif %}
+        });
+    </script>
+{% endblock %}

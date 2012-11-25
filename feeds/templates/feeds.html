@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load django_mustache  %}
+{% include 'head.html' %}
+<style type="text/css">
+    body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+</style>
+{% django_mustache %}
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var initKey = GRAILO_Util.util.tokenGenerator()+
+                GRAILO_Util.util.tokenGenerator()+
+                GRAILO_Util.util.tokenGenerator()+
+                GRAILO_Util.util.tokenGenerator();
+
+        $('#private_key').val(initKey);
+
+        var rsakey = cryptico.generateRSAKey(initKey, 1024);
+
+        var publicKeyString = cryptico.publicKeyString(rsakey);
+        $('#id_public_key').val(publicKeyString);
+
+    });
+</script>
+{% end_django_mustache %}
+
+<body>
+{% include 'topbar.html' %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+            {% include 'sidebar.html' %}
+        </div><!--/span-->
+        <div class="span10">
+
+            <div class="row-fluid">
+                <div class="form-create-feed">
+                    <h3>Create A New Feed</h3>
+                    {% if form.errors %}
+                        <div class="alert alert-error"><h4>Errors</h4> {{ form.errors }}</div>
+                    {% endif %}
+                    <div class="alert alert-info"><strong>Super Important! You will share the Feed key with people you trust so they can view your messages.</strong> We generate your Grailo feed from a private key. Your private key is the only way for
+                        you (or others) to view the Grailo feed. Gralio.net does not have any way to retrieve the feed's private key if you loose
+                        it so make sure to keep it in a safe place. If you loose this feed's private key you will need to delete teh feed.</div>
+
+                    <div style="margin: 10px auto; display: inline;">
+                        <div style="text-align:left;display: inline-block; width: 70%;"><span style="font-size: 1.4em; font-weight: bold;">Feed Private Key</span></div>
+                        <div class="btn-group"  style="text-align:right;display: inline-block;">
+                            <button class="btn btn-mini active">Unique Key</button>
+                            <button class="btn btn-mini">Pass Phrase</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="progress" style="margin-top: 10px;">
+                            <div class="bar bar-danger" style="width: 40%;"></div>
+                            <div class="bar bar-warning" style="width: 35%;"></div>
+                            <div class="bar bar-success" style="width: 25%;"></div>
+                        </div>
+                        <span class="label label-important">Will NOT be saved on server. Write this down!</span>
+                        <textarea rows="4" wrap="hard" style="width:100%;" id="private_key">I am an agent implanted into your unconscious.</textarea>
+                    </div>
+                    <form action="{% url templar_feeds %}" method="post" id="feed_form">{% csrf_token %}
+                        <span class="label label-important">This is PUBLIC, be discreet.</span>
+                        {{ form.title }}
+                        {{ form.public_key }}
+                        <p><input type="submit" class="btn btn-large btn-primary" value="Create New Feed"></p>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="row-fluid">
+                {% if feeds.all  %}
+                    <h1>Feeds</h1>
+                    <table cellpadding="10">
+                    {% for feed in feeds.all %}
+                        <tr>
+                            <td><span style="font-size: 1.4em; font-weight: bold">{{ feed.title }}</span></td>
+                            <td><a class="btn btn-mini" href="feed/{{ feed.id }}/">View</a>
+                                <a class="btn btn-mini btn-danger" href>Delete</a></td>
+
+                        </tr>
+                    {% endfor %}
+
+                {% else %}
+                    <h1>No Feeds Yet</h1>
+                {% endif %}
+
+
+
+                </table>
+
+            </div>
+
+        </div><!--/span-->
+    </div><!--/row-->
+
+    <hr>
+
+    <footer>
+        <p>&copy; Grailo 2012</p>
+    </footer>
+
+</div><!--/.fluid-container-->
+
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load django_mustache  %}
+{% load grailo_tags %}
+{% include 'head.html' %}
+<style type="text/css">
+    body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+</style>
+{% django_mustache %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#action_save_message').click(function(){
+
+            if($('#message_unencrypted').val() && $('#private_key').val()){
+                $('#errors_area').html('');
+                $('#errors_area').hide();
+                var rsaKey = cryptico.generateRSAKey($('#private_key').val(), 1024);
+                var publicKeyString = cryptico.publicKeyString(rsaKey);
+                encrypted = cryptico.encrypt(
+                        $('#message_unencrypted').val(),
+                        publicKeyString);
+                $('#id_text').val(encrypted.cipher);
+                $('#message_form').submit();
+
+            } else {
+                $('#errors_area').html('<div class="alert alert-error"><h4>Please enter a message to save and the feed private key.</h4></div>');
+            }   $('#errors_area').show();
+
+            return false;
+        });
+
+        $('.message_state_button').each(function(index, item){
+            $(this).bind('click',
+                    {
+                        message_img_clicked:this,
+                        unlock_img:'{{ STATIC_URL }}images/lock-unlock-icon.png'},
+                    decryptMessageHandler);
+        });
+
+        //message_state_button
+        /*$('#message_state_button').click(function(){
+
+
+            $('#message_state_button').find('img').attr("src","{{ STATIC_URL }}images/lock-unlock-icon.png");
+            return false;
+        });*/
+
+    });
+</script>
+{% end_django_mustache %}
+
+<body>
+{% include 'topbar.html' %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+            {% include 'sidebar.html' %}
+        </div><!--/span-->
+        <div class="span10">
+            <h1 id="feed_title" data-public-key="{{ feed.public_key }}">{{ feed.title }}</h1>
+            <div class="row-fluid">
+                <div id="errors_area" style="display: none;">
+                    {% if form.errors %}
+                        <div class="alert alert-error" ><h4>Errors</h4> {{ form.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-create-feed">
+                    <strong>Feed Private Key</strong>
+                    <span class="label label-important">Will NOT be saved on server.</span>
+                    <textarea rows="3" wrap="hard" style="width:100%;" id="private_key" placeholder="Enter this feed private key (required)..."></textarea>
+                </div>
+                {% if request.user.is_authenticated %}
+                <div class="form-create-feed">
+                    <h3>Enter A Message</h3>
+
+                    <div>
+                        <span class="label">Will be saved on server as encrypted text.</span>
+                        <textarea rows="4" wrap="hard" style="width:100%;" id="message_unencrypted" placeholder="Enter message..."></textarea>
+                    </div>
+                    <form action="{% url feeds.views.feed feed.id %}" method="post" id="message_form">{% csrf_token %}
+                        {{ form.text }}
+                        <p><a href="#" id="action_save_message" class="btn btn-large btn-primary">Save Encrypted Message</a> </p>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row-fluid">
+                {% if feed.messages.all  %}
+                    <h3>Messages</h3>
+                    {% for message in feed.messages.all %}
+                        <div class="grailo_message" data-message-id="{{ message.id }}">
+                            <div class="grailo_message_part avatar"><img class="message_avatar_img" src="{% url feeds.views.avatar_png message.templar.user.username  %}"/></div>
+                            <div class="grailo_message_part message">
+                                <div class="message_username">{{ message.templar.user.username }}</div>
+                                <div class="message_text">{{ message.text|break_text:60|linebreaksbr }}</div>
+                            </div>
+                            <div class="grailo_message_part message_state_button" data-message-encrypted="{{ message.text}}">
+                                <img class="message_avatar_img" src="{{ STATIC_URL }}images/lock-icon.png"/></div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h3>No Messages Yet</h3>
+                {% endif %}
+            </div><!--/span-->
+        </div>
+    </div><!--/row-->
+
+    <hr>
+
+    <footer>
+        <p>&copy; Grailo 2012</p>
+    </footer>
+
+</div><!--/.fluid-container-->
+
+</body>
+</html>

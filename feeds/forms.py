@@ -1,10 +1,10 @@
 from django import forms
-from models import Message
+from models import Message,Feed
 
-try:
-    from notification import models as notification
-except ImportError:
-    notification = None
+#try:
+#    from notification import models as notification
+#except ImportError:
+#    notification = None
 
 class RegisterForm(forms.Form):
     handel = forms.CharField(max_length=32,widget=forms.HiddenInput())
@@ -13,21 +13,43 @@ class RegisterForm(forms.Form):
     pw_unencrypted = forms.CharField(max_length=128,widget=forms.HiddenInput())
     avatar_img = forms.CharField(max_length=16000,widget=forms.HiddenInput())
 
+class FeedForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Feed Title',
+        max_length=250,
+        widget=forms.TextInput(attrs={
+            'placeholder':'Name of the new feed.',
+            'class':'fld_title_feed',
+        }))
+    public_key = forms.CharField(max_length=250,required=False,widget=forms.HiddenInput())
+
+    class Meta:
+        model = Feed
+        exclude = ('followers', 'created')
+
+    def __init__(self, owner= None, *args, **kwargs):
+        self.owner = owner
+        super(FeedForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        feed_instance = super(FeedForm, self).save(commit=False)
+        feed_instance.title = self.cleaned_data["title"]
+        feed_instance.public_key = self.cleaned_data["public_key"]
+        feed_instance.owner = self.owner
+        feed_instance.save()
+
 class MessageForm(forms.ModelForm):
 
-    text = forms.CharField(label='',
-        widget=forms.Textarea(attrs={
-            'rows': '4',
-            'cols':'30',
-            'id':'new_message'
-        }))
+    #encrypted
+    text = forms.CharField(max_length=512,widget=forms.HiddenInput())
 
     class Meta:
         model = Message
-        exclude = ('sender_type', 'sender_id', 'sent')
+        exclude = ('sent')
 
-    def __init__(self, user=None, *args, **kwargs):
-        self.user = user
+    def __init__(self, feed=None, templar=None, *args, **kwargs):
+        self.feed = feed
+        self.templar = templar
         super(MessageForm, self).__init__(*args, **kwargs)
 
     def clean_text(self):
@@ -36,5 +58,7 @@ class MessageForm(forms.ModelForm):
     def save(self):
         text = self.cleaned_data["text"]
         message_instance = super(MessageForm, self).save(commit=False)
-        message_instance.sender = self.user
+        message_instance.feed = self.feed
+        message_instance.templar = self.templar
+
         message_instance.save()

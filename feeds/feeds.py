@@ -5,8 +5,8 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
-from feeds.models import Message, MessageInstance
-from feeds.templatetags.microblogging_tags import render_message_text
+from models import Message, MessageInstance
+from templatetags.microblogging_tags import render_message_text
 from django.template.defaultfilters import linebreaks, capfirst
 from datetime import datetime
 
@@ -16,7 +16,7 @@ class BaseMessageFeed(Feed):
     def item_id(self, message):
         return "http://%s%s#%s" % (
             Site.objects.get_current().domain,
-            reverse('microblogging.views.single', args=[message.id,]),
+            reverse('feeds.views.single', args=[message.id,]),
             message.id,
             )
 

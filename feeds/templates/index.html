@@ -54,18 +54,17 @@
             <li><a href="#">Contact</a></li>
             {% if request.user.is_authenticated %}<li><a href="logout.html">Logout</a></li>{% endif %}
         </ul>
-        <img src="{{ STATIC_URL }}images/icon-32-shadow.png" style="position: relative; top: -5px;">
-        <span style="color: #999;font-size: 1.8em; font-weight: bold;">Grailo</span> <span style="color: #ddd;font-size: 1.8em;  font-weight: bold;">Feeds</span>
-    </div>
+        <h3 class="muted"><a href="{% url site_landing %}"><img src="{{ STATIC_URL }}images/grailo_logo_all.png"></a></h3>
 
     <hr>
 
     <div class="jumbotron">
         <h1>Finally, micro blogging with real privacy.</h1>
         <p class="lead">Grailo is the only social network that lets you choose the
-        level of privacy you want using <a target="_new" href="http://en.wikipedia.org/wiki/Public-key_cryptography">public/private key encryption.</a>  There are no
-        passwords, only keys that you share with others you trust. We hope to make
-            privacy on the internet simple and easy enough for everyone to use.</p>
+        level of privacy you want using <a target="_new" href="http://en.wikipedia.org/wiki/Public-key_cryptography">
+                public/private key encryption.</a>  Feeds are visible only to friends who you trust,
+            by sharing keys. We hope to make privacy on the internet simple and easy enough
+            for everyone to use.</p>
         <a class="btn btn-large btn-success" href="register.html">Sign up today!</a>
     </div>
 

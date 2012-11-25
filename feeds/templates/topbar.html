@@ -6,14 +6,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="index.html" style="display: inline;">
-                <img src="{{ STATIC_URL }}images/icon-32-shadow.png" style="position: relative; top: -5px;">
-                <span style="color: #999;font-size: 0.8em; font-weight: bold;">Grailo</span> <span style="color: #ddd;font-size: 0.8em;  font-weight: bold;">Feeds</span>
+            <a class="brand" href="{% url site_landing %}" style="display: inline;">
+                <img src="{{ STATIC_URL }}images/grailo_logo_all.png">
             </a>
             <div class="nav-collapse collapse">
                 {% if request.user.is_authenticated %}
                 <p class="navbar-text pull-right" style="margin-left: 10px;">
-                        <a href="logout.html">Logout</a>
+                        <a href="{% url logout %}">Logout</a>
                 </p>
                 <p class="navbar-text pull-right">
                     Logged in as {{ request.user.username  }}
