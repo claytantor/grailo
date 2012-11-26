@@ -4,10 +4,10 @@ import uuid
 import random
 import re
 import cStringIO
-from datetime import datetime
 from PIL import Image
 
 from django.http import HttpResponse
+from django.http import Http404
 from django.shortcuts import render
 from django.contrib.auth import authenticate,login,logout
 from django.utils import simplejson
@@ -39,7 +39,18 @@ def index(request,
 def home(request,
          template_name="home.html"):
 
+    templar = Templar.objects.get(user=request.user)
+    feeds = Feed.objects.filter(owner=templar)
+
+    followed_feeds_id_list = FeedFollowers.objects.filter(
+        follower = templar
+    ).values_list('feed',flat=True)
+
+    followed_feeds = Feed.objects.filter(id__in=followed_feeds_id_list)
+
     return render_to_response(template_name, {
+        'feeds':feeds,
+        'followed_feeds':followed_feeds
         }, context_instance=RequestContext(request))
 
 def login_user(request):
@@ -138,8 +149,21 @@ def uname_json(request):
     return HttpResponse(data, mimetype='application/json')
 
 def profile_detail(request, username, template_name="profile.html"):
+
+    templar = Templar.objects.get(user__username=username)
+    if not templar:
+        raise Http404
+
+    #following feeds
+    followed_feeds_id_list = FeedFollowers.objects.filter(
+        follower = templar
+    ).values_list('feed',flat=True)
+
+    followed_feeds = Feed.objects.filter(id__in=followed_feeds_id_list)
+
     return render_to_response(template_name, {
-        "username": username
+        "templar": templar,
+        'followed_feeds':followed_feeds
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -167,23 +191,72 @@ def templar_feeds(request, form_class=FeedForm,
 
 def feed(request, feed_id, form_class=MessageForm,
                 template_name="feed.html", success_url=None):
+
+    follow_feed = None
+    templar = Templar.objects.get(user=request.user)
+    feed =  get_object_or_404(Feed, id=feed_id)
+    followers_id_list = FeedFollowers.objects.filter(
+        feed = feed
+    ).values_list('follower',flat=True)
+
+    #followersfollowed_feeds = Feed.objects.filter(id__in=followed_feeds_id_list)
+    following_templars = Templar.objects.filter(id__in=followers_id_list)
+
     if request.method == "POST": #save new message
-        feed =  get_object_or_404(Feed, id=feed_id)
-        templar = Templar.objects.get(user=request.user)
+
         form = form_class(feed,templar,request.POST)
+
         if form.is_valid():
             form.save()
             if success_url is None:
                 success_url = reverse('feeds.views.feed',args=(feed_id,) )
                 return HttpResponseRedirect(success_url)
     else: #get feed by id
-        feed = get_object_or_404(Feed, id=feed_id)
         form = form_class(feed)
+
+    #if authentcated
+    if templar:
+        try:
+            follow_feed = FeedFollowers.objects.get(
+                feed = feed,
+                follower = templar
+            )
+        except ObjectDoesNotExist:
+            follow_feed = None
 
     return render_to_response(template_name, {
         "form": form,
-        "feed":feed
+        "feed":feed,
+        "follow_feed":follow_feed,
+        "followers":following_templars,
     }, context_instance=RequestContext(request))
+
+@login_required
+def follow_feed(request, feed_id):
+    context={}
+    if request.method == "GET":
+        feed =  get_object_or_404(Feed, id=feed_id)
+        templar = Templar.objects.get(user=request.user)
+        if request.GET.get("toggle","on") == "on":
+            #make the relation
+            follow_relation = FeedFollowers.objects.create(
+                feed = feed,
+                follower = templar
+            )
+            follow_relation.save()
+            context['status']="SUCCEED"
+            context['state']="on"
+        else:
+            follow_relation = FeedFollowers.objects.filter(
+                feed = feed,
+                follower = templar
+            )
+            follow_relation.all().delete()
+            context['status']="SUCCEED"
+            context['state']="off"
+
+    data = simplejson.dumps(context)
+    return HttpResponse(data, mimetype='application/json')
 
 @login_required
 def message(request, message_id,

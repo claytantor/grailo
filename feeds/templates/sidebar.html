@@ -1,4 +1,5 @@
 {% load i18n %}
+{% if request.user.is_authenticated %}
 <div class="well sidebar-nav">
     <ul class="nav nav-list">
         <li class="nav-header">User</li>
@@ -6,3 +7,4 @@
         <li><a href="{% url templar_feeds %}">Feeds</a></li>
     </ul>
 </div><!--/.well -->
+{% endif %}

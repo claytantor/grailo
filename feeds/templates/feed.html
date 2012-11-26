@@ -2,6 +2,7 @@
 <html lang="en">
 {% load django_mustache  %}
 {% load grailo_tags %}
+{% load humanize %}
 {% include 'head.html' %}
 <style type="text/css">
     body {
@@ -32,6 +33,7 @@
             return false;
         });
 
+        //bind all messages
         $('.message_state_button').each(function(index, item){
             $(this).bind('click',
                     {
@@ -40,13 +42,33 @@
                     decryptMessageHandler);
         });
 
-        //message_state_button
-        /*$('#message_state_button').click(function(){
+        $('#follow_feed_toggle').click(function(){
 
+            var element = this;
+            $.ajax({
+                url: "{% url feeds.views.follow_feed feed.id %}?toggle="+$('#follow_feed_toggle').data('follow-toggle'),
+                dataType:"json",
+                error: function(){
+                    $('#errors_area').html('<div class="alert alert-error"><h4>Problem when attempting to follow feed, try again.</h4></div>');
+                    $('#errors_area').show();
+                }
 
-            $('#message_state_button').find('img').attr("src","{{ STATIC_URL }}images/lock-unlock-icon.png");
+            }).done(function ( data ) {
+                if(data.state=='off') {
+                    $(element).find('img').attr("src",'{{ STATIC_URL }}images/follow_disabled.png');
+                    $('#follow_text').html('Follow');
+                    $(element).data("follow-toggle","on"); //what to set it to next time
+                } else if(data.state=='on') {
+                    $(element).find('img').attr("src",'{{ STATIC_URL }}images/following.png');
+                    $('#follow_text').html('Following');
+                    $(element).data("follow-toggle","off"); //what to set it to next time
+                }
+            });
+
             return false;
-        });*/
+        });
+
+
 
     });
 </script>
@@ -60,7 +82,18 @@
             {% include 'sidebar.html' %}
         </div><!--/span-->
         <div class="span10">
-            <h1 id="feed_title" data-public-key="{{ feed.public_key }}">{{ feed.title }}</h1>
+            <div id="feed_title_area" class="feed_title_area" data-public-key="{{ feed.public_key }}">
+                {% if request.user.is_authenticated %}
+                    {% if follow_feed %}
+                        <a href="#" id="follow_feed_toggle" data-follow-toggle="off">
+                            <img src="{{ STATIC_URL }}images/following.png" width="32" height="32"/>&nbsp;<span style="font-size: 0.5em;font-weight: normal" id="follow_text">Following</span></a>
+                    {% else %}
+                        <a href="#" id="follow_feed_toggle" data-follow-toggle="on">
+                        <img src="{{ STATIC_URL }}images/follow_disabled.png" width="32" height="32"/>&nbsp;<span style="font-size: 0.5em;font-weight: normal" id="follow_text">Follow</span></a>
+                    {% endif %}
+                {% endif %}
+                <span class="feed_title">{{ feed.title }} by <a href="{% url feeds.views.profile_detail feed.owner.user.username  %}">{{ feed.owner.user.username }}</a></span>
+            </div>
             <div class="row-fluid">
                 <div id="errors_area" style="display: none;">
                     {% if form.errors %}
@@ -72,7 +105,7 @@
                     <span class="label label-important">Will NOT be saved on server.</span>
                     <textarea rows="3" wrap="hard" style="width:100%;" id="private_key" placeholder="Enter this feed private key (required)..."></textarea>
                 </div>
-                {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated and feed.owner.user.username == request.user.username %}
                 <div class="form-create-feed">
                     <h3>Enter A Message</h3>
 
@@ -88,14 +121,28 @@
                 {% endif %}
             </div>
             <div class="row-fluid">
+                {% if followers.all  %}
+                    <h3>Followers</h3>
+                    <div style="display: inline;">
+                    {% for templar in followers.all %}
+                        <div class="templar_small">
+                            <a href="{% url feeds.views.profile_detail templar.user.username  %}"><img class="message_avatar_img" src="{% url feeds.views.avatar_png templar.user.username  %}"/></a><br>
+                            <a href="{% url feeds.views.profile_detail templar.user.username  %}">{{ templar.user.username }}</a>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row-fluid">
                 {% if feed.messages.all  %}
                     <h3>Messages</h3>
                     {% for message in feed.messages.all %}
                         <div class="grailo_message" data-message-id="{{ message.id }}">
-                            <div class="grailo_message_part avatar"><img class="message_avatar_img" src="{% url feeds.views.avatar_png message.templar.user.username  %}"/></div>
+                            <div class="grailo_message_part avatar"><a href="{% url feeds.views.profile_detail message.templar.user.username  %}"><img class="message_avatar_img" src="{% url feeds.views.avatar_png message.templar.user.username  %}"/></a></div>
                             <div class="grailo_message_part message">
-                                <div class="message_username">{{ message.templar.user.username }}</div>
+                                <div><span class="message_username"><a href="{% url feeds.views.profile_detail message.templar.user.username  %}">{{ message.templar.user.username }}</a></span>&nbsp;<span class="message_time">{{ message.sent|naturaltime }}</span></div>
                                 <div class="message_text">{{ message.text|break_text:60|linebreaksbr }}</div>
+                                <div class="message_links"><a href="#"><i class="icon-share-alt"></i> Reply</a></div>
                             </div>
                             <div class="grailo_message_part message_state_button" data-message-encrypted="{{ message.text}}">
                                 <img class="message_avatar_img" src="{{ STATIC_URL }}images/lock-icon.png"/></div>
@@ -108,11 +155,9 @@
         </div>
     </div><!--/row-->
 
-    <hr>
+    {% include 'footer.html' %}
 
-    <footer>
-        <p>&copy; Grailo 2012</p>
-    </footer>
+
 
 </div><!--/.fluid-container-->
 

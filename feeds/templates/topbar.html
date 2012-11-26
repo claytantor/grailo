@@ -17,7 +17,8 @@
                 <p class="navbar-text pull-right">
                     Logged in as {{ request.user.username  }}
                 </p>
-
+                {% else %}
+                    <a class="navbar-text pull-right" href="{% url templar_home %}">Login</a>
                 {% endif %}
 
 {% comment %}                <ul class="nav">

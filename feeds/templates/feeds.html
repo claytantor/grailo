@@ -55,11 +55,6 @@
                         </div>
                     </div>
                     <div>
-                        <div class="progress" style="margin-top: 10px;">
-                            <div class="bar bar-danger" style="width: 40%;"></div>
-                            <div class="bar bar-warning" style="width: 35%;"></div>
-                            <div class="bar bar-success" style="width: 25%;"></div>
-                        </div>
                         <span class="label label-important">Will NOT be saved on server. Write this down!</span>
                         <textarea rows="4" wrap="hard" style="width:100%;" id="private_key">I am an agent implanted into your unconscious.</textarea>
                     </div>
@@ -74,36 +69,28 @@
             </div>
 
             <div class="row-fluid">
+                <h2>My feeds</h2>
                 {% if feeds.all  %}
-                    <h1>Feeds</h1>
                     <table cellpadding="10">
-                    {% for feed in feeds.all %}
-                        <tr>
-                            <td><span style="font-size: 1.4em; font-weight: bold">{{ feed.title }}</span></td>
-                            <td><a class="btn btn-mini" href="feed/{{ feed.id }}/">View</a>
-                                <a class="btn btn-mini btn-danger" href>Delete</a></td>
+                        {% for feed in feeds.all %}
+                            <tr>
+                                <td><span style="font-size: 1.4em; font-weight: bold">{{ feed.title }}</span></td>
+                                <td><a class="btn btn-mini" href="feed/{{ feed.id }}/">View</a>
+                                    <a class="btn btn-mini btn-danger" href>Delete</a></td>
 
-                        </tr>
-                    {% endfor %}
+                            </tr>
+                        {% endfor %}
 
+                    </table>
                 {% else %}
-                    <h1>No Feeds Yet</h1>
+                    <h4>No feeds yet</h4>
                 {% endif %}
-
-
-
-                </table>
-
             </div>
 
         </div><!--/span-->
     </div><!--/row-->
 
-    <hr>
-
-    <footer>
-        <p>&copy; Grailo 2012</p>
-    </footer>
+    {% include 'footer.html' %}
 
 </div><!--/.fluid-container-->
 

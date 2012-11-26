@@ -25,8 +25,8 @@ urlpatterns = patterns('',
     #user image
     url(r'^avatar/(\w+).png', 'feeds.views.avatar_png', name='avatar'),
 
-
     #json api
+    url(r'^follow/(\w+).json', 'feeds.views.follow_feed', name='follow_feed'),
     url(r'^uname.json', 'feeds.views.uname_json'),
 
 
