@@ -2,9 +2,9 @@
 {% if request.user.is_authenticated %}
 <div class="well sidebar-nav">
     <ul class="nav nav-list">
-        <li class="nav-header">User</li>
+        <li class="nav-header">{{ request.user.username }}</li>
         <li><a href="{% url templar_home %}">Home</a></li>
-        <li><a href="{% url templar_feeds %}">Feeds</a></li>
+        <li><a href="{% url templar_feeds %}">Create Feed</a></li>
     </ul>
 </div><!--/.well -->
 {% endif %}

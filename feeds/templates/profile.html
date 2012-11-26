@@ -38,11 +38,10 @@
                 <h2>{{ templar.user.username  }}'s feeds</h2>
                 {% if feeds.all  %}
                     <table cellpadding="10">
-                        {% for feed in templar.feeds.all %}
+                        {% for feed in feeds.all %}
                             <tr>
                                 <td><span style="font-size: 1.4em; font-weight: bold">{{ feed.title }}</span></td>
-                                <td><a class="btn btn-mini" href="feed/{{ feed.id }}/">View</a>
-                                    <a class="btn btn-mini btn-danger" href>Delete</a></td>
+                                <td><a class="btn btn-mini" href="{% url feeds.views.feed feed.id %}">View</a>
 
                             </tr>
                         {% endfor %}

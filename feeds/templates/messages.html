@@ -1,11 +1,17 @@
+{% load grailo_tags %}
+{% load humanize %}
 {% if feed.messages.all  %}
     <h3>Messages</h3>
     {% for message in feed.messages.all %}
         <div class="grailo_message" data-message-id="{{ message.id }}">
-            <div class="grailo_message_part avatar"><img class="message_avatar_img" src="{% url feeds.views.avatar_png message.templar.user.username  %}"/></div>
+            <div class="grailo_message_part avatar"><a href="{% url feeds.views.profile_detail message.templar.user.username  %}"><img class="message_avatar_img" src="{% url feeds.views.avatar_png message.templar.user.username  %}"/></a></div>
             <div class="grailo_message_part message">
-                <div class="message_username">{{ message.templar.user.username }}</div>
+                <div><span class="message_username"><a href="{% url feeds.views.profile_detail message.templar.user.username  %}">{{ message.templar.user.username }}</a></span>&nbsp;<span class="message_time">{{ message.sent|naturaltime }}</span></div>
                 <div class="message_text">{{ message.text|break_text:60|linebreaksbr }}</div>
+                <div class="message_links">
+                    <a href="#" class="message_link_reply"><i class="icon-share-alt"></i> Reply</a>
+                </div>
+                <div class="message_reply_form"></div>
             </div>
             <div class="grailo_message_part message_state_button" data-message-encrypted="{{ message.text}}">
                 <img class="message_avatar_img" src="{{ STATIC_URL }}images/lock-icon.png"/></div>
@@ -14,3 +20,4 @@
 {% else %}
     <h3>No Messages Yet</h3>
 {% endif %}
+

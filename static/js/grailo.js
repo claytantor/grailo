@@ -50,12 +50,21 @@ function decryptMessageHandler(event,ui) {
 
     } else {
         $('#errors_area').html('<div class="alert alert-error"><h4>Please enter the feed private key.</h4></div>');
-    }   $('#errors_area').show();
+        $('#errors_area').show();
+    }
 
     return false;
 }
 
-
+function replyMessageHandler(event,ui) {
+    var message_reply_clicked = event.data.message_reply_clicked;
+    var model = {};
+    $(message_reply_clicked).parent().siblings('.message_reply_form').html(
+        Mustache.render('<div><span class="label">Will be saved on server as encrypted text.</span>' +
+            '<textarea rows="4" wrap="hard" style="width:100%;" id="message_unencrypted" ' +
+            'placeholder="Enter reply..."></textarea><br><a href="" class="btn btn-primary">Save reply</a></div>',model));
+    return false;
+}
 
 function loadCanvas(canvasName, dataURL) {
     var canvas = document.getElementById(canvasName);

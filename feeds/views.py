@@ -151,8 +151,11 @@ def uname_json(request):
 def profile_detail(request, username, template_name="profile.html"):
 
     templar = Templar.objects.get(user__username=username)
+
     if not templar:
         raise Http404
+
+    feeds = Feed.objects.filter(owner=templar)
 
     #following feeds
     followed_feeds_id_list = FeedFollowers.objects.filter(
@@ -162,7 +165,8 @@ def profile_detail(request, username, template_name="profile.html"):
     followed_feeds = Feed.objects.filter(id__in=followed_feeds_id_list)
 
     return render_to_response(template_name, {
-        "templar": templar,
+        'templar': templar,
+        'feeds':feeds,
         'followed_feeds':followed_feeds
     }, context_instance=RequestContext(request))
 
@@ -263,6 +267,17 @@ def message(request, message_id,
                 template_name="message.html", success_url=None):
 
     message = get_object_or_404(Message, id=message_id)
+    return render_to_response(template_name, {
+        "message": message
+    }, context_instance=RequestContext(request))
+
+@login_required
+def reply_message(request, message_id, form_class=MessageForm,
+                  template_name="feed.html", success_url=None):
+    templar = Templar.objects.get(user=request.user)
+    message = get_object_or_404(Message, id=message_id)
+
+
     return render_to_response(template_name, {
         "message": message
     }, context_instance=RequestContext(request))
