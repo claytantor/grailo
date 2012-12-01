@@ -1,10 +1,7 @@
 from django import forms
 from models import Message,Feed
 
-#try:
-#    from notification import models as notification
-#except ImportError:
-#    notification = None
+
 
 class RegisterForm(forms.Form):
     handel = forms.CharField(max_length=32,widget=forms.HiddenInput())

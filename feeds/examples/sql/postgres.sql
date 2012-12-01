@@ -1,0 +1,3 @@
+CREATE USER grailodb WITH PASSWORD 'Rally56Templar';
+CREATE DATABASE grailodb;
+GRANT ALL PRIVILEGES ON DATABASE grailodb to grailodb;

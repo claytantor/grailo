@@ -22,3 +22,16 @@ The following articles have influenced decisions we have made and we think are i
 
 1. $ pip freeze > requirements.txt
 2. update example settings
+
+#Installation & Configuration
+We used the bitnami cloud instance for AWS for our implementation.
+
+AMI: bitnami-djangostack-1.4.2-1-linux-ubuntu-12.04.1-x86_64-ebs (ami-e8ad1681)
+Zone: us-east-1a
+Type: t1.micro	State: running
+
+* [Bitnami Django Wiki](http://wiki.bitnami.org/Components/Django?highlight=Django)
+* [Bitnami Django README](http://bitnami.org/files/stacks/djangostack/1.4.2-1/README.txt)
+
+    sudo vi /home/bitnami/apps/django/conf/grailo.conf
+    sudo /opt/bitnami/ctlscript.sh restart apache

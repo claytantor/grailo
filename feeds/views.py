@@ -27,10 +27,6 @@ from django.middleware import csrf
 from models import Message, FeedFollowers, Templar,Feed
 from forms import MessageForm,RegisterForm,FeedForm
 
-if "notification" in settings.INSTALLED_APPS:
-    from notification import models as notification
-else:
-    notification = None
 
 def index(request,
           template_name="index.html"):

@@ -125,8 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.humanize'
     'feeds',
-    'feeds.templatetags',
-    'notification'
+    'feeds.templatetags'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     )

@@ -3,10 +3,6 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 
-try:
-    from notification import models as notification
-except ImportError:
-    notification = None
 
 # relational databases are a terrible way to do
 # multicast messages (just ask Twitter) but here you have it :-)
