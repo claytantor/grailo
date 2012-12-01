@@ -33,6 +33,7 @@ Type: t1.micro	State: running
 * [Bitnami Django Wiki](http://wiki.bitnami.org/Components/Django?highlight=Django)
 * [Bitnami Django README](http://bitnami.org/files/stacks/djangostack/1.4.2-1/README.txt)
 
+```bash
     sudo vi /home/bitnami/apps/django/conf/grailo.conf
-
     sudo /opt/bitnami/ctlscript.sh restart apache
+```
