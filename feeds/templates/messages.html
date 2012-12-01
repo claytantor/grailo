@@ -1,20 +1,73 @@
 {% load grailo_tags %}
 {% load humanize %}
-{% if feed.messages.all  %}
+{% if messages  %}
     <h3>Messages</h3>
-    {% for message in feed.messages.all %}
+    {% for message in messages %}
         <div class="grailo_message" data-message-id="{{ message.id }}">
-            <div class="grailo_message_part avatar"><a href="{% url feeds.views.profile_detail message.templar.user.username  %}"><img class="message_avatar_img" src="{% url feeds.views.avatar_png message.templar.user.username  %}"/></a></div>
+            <input type="hidden" value="{{message.text}}" class="message-encrypted">
+            <div class="grailo_message_part avatar"><a href="{% url feeds.views.profile_detail message.templar.user.username  %}">
+                <img class="message_avatar_img" src="{% url feeds.views.avatar_png message.templar.user.username  %}"/></a>
+            </div>
             <div class="grailo_message_part message">
-                <div><span class="message_username"><a href="{% url feeds.views.profile_detail message.templar.user.username  %}">{{ message.templar.user.username }}</a></span>&nbsp;<span class="message_time">{{ message.sent|naturaltime }}</span></div>
+                <div>
+                	<span class="message_username">
+                	<a href="{% url feeds.views.profile_detail message.templar.user.username  %}">{{ message.templar.user.username }}</a>
+                	</span>
+                    &nbsp;
+                    <span class="message_time">{{ message.sent|naturaltime }}</span>
+                </div>
                 <div class="message_text">{{ message.text|break_text:60|linebreaksbr }}</div>
                 <div class="message_links">
-                    <a href="#" class="message_link_reply"><i class="icon-share-alt"></i> Reply</a>
+                    {% if not message.templar.user.username == request.user.username  %}
+                    <a href="#" class="message_link_reply"
+                       data-message-id="{{ message.id }}"
+                       data-message-url="{% url feeds.views.reply_message message.id %}">
+                        <i class="icon-share-alt"></i>
+                        Reply
+                    </a>
+                    {% endif %}
+                    {% if message.templar.user.username == request.user.username  %}
+                    <a href="{% url feeds.views.delete_message message.id %}" class="message_link_delete"
+                            data-message-id="{{ message.id }}"
+                            data-message-url="{% url feeds.views.reply_message message.id %}">
+                        <i class="icon-trash"></i> Delete
+                    </a>
+                    {% endif %}
                 </div>
                 <div class="message_reply_form"></div>
             </div>
-            <div class="grailo_message_part message_state_button" data-message-encrypted="{{ message.text}}">
-                <img class="message_avatar_img" src="{{ STATIC_URL }}images/lock-icon.png"/></div>
+            <div class="grailo_message_part message_state_button">
+                <img class="message_avatar_img" src="{{ STATIC_URL }}images/lock-icon.png"/>
+            </div>
+            {% for reply in message.replies.all %}
+                <div class="grailo_reply" data-message-id="{{ reply.id }}">
+                    <input type="hidden" value="{{reply.text}}" class="message-encrypted">
+                    <div class="grailo_reply_part avatar"><a href="{% url feeds.views.profile_detail reply.templar.user.username  %}">
+                        <img class="reply_avatar_img" src="{% url feeds.views.avatar_png reply.templar.user.username  %}"/></a>
+                    </div>
+                    <div class="grailo_reply_part message">
+                        <div>
+                        	<span class="reply_username">
+                                    <a href="{% url feeds.views.profile_detail reply.templar.user.username  %}">
+                                        {{ reply.templar.user.username }}
+                                    </a>
+                            </span>
+                            &nbsp;
+                            <span class="reply_time">{{ reply.sent|naturaltime }}</span>
+                        </div>
+                        <div class="message_text">{{ reply.text|break_text:60|linebreaksbr }}</div>
+                        <div class="message_links">
+                            {% if reply.templar.user.username == request.user.username  %}
+                                <a href="{% url feeds.views.delete_message reply.id %}" class="message_link_delete"
+                                   data-message-id="{{ message.id }}">
+                                    <i class="icon-trash"></i> Delete
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
         </div>
     {% endfor %}
 {% else %}

@@ -35,7 +35,7 @@ class Feed(models.Model):
 class Message(models.Model):
     feed = models.ForeignKey(Feed,null=True, related_name='messages', blank=True)
     templar = models.ForeignKey(Templar, related_name='messages',null=True, blank=True)
-    reply_id = models.IntegerField(null=True, blank=True)
+    reply_to = models.ForeignKey('Message', related_name='replies', null=True, blank=True)
     text = models.CharField(max_length=250)
     sent = models.DateTimeField(_('sent'), default=datetime.now)
 

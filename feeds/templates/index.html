@@ -59,6 +59,9 @@
     <hr>
 
     <div class="jumbotron">
+{#        <div style="width: 100%; text-align: center;">#}
+{#            <iframe width="560" height="315" src="http://www.youtube.com/embed/DICqIQBTGCM" frameborder="0" allowfullscreen></iframe>#}
+{#        </div>#}
         <h1>Finally, micro blogging with real privacy.</h1>
         <p class="lead">Grailo is the only social network that lets you choose the
         level of privacy you want using <a target="_new" href="http://en.wikipedia.org/wiki/Public-key_cryptography">
@@ -71,37 +74,82 @@
     <hr>
 
     <div class="row-fluid marketing">
-        <div class="span6">
-            <h4>Your choices.</h4>
-            <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+        <div class="span6" style="text-align: center;">
 
-            <h4>Why Privacy?</h4>
-            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+            <div class="index_minifeature">
+                <ul class="thumbnails">
+                    <li class="span6 tn_index" style="width: 100%; margin: 0px;">
+                        <img src="{{ STATIC_URL }}images/choices.png" alt="">
+                    </li>
+                </ul>
+                <h4 class="index_mf_title">Your choices</h4>
+                <p>You choose who can decrypt your content or contribute to the conversation using simple keys you share with those you trust.
+                <span class="attr_link"><a href="http://www.flickr.com/photos/yondermind/879110008/lightbox/">attribution</a></span></p>
 
-            <h4>Simple</h4>
-            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+            </div>
+            <div class="index_minifeature">
+                <ul class="thumbnails">
+                    <li class="span6 tn_index" style="width: 100%; margin: 0px;">
+                        <img src="{{ STATIC_URL }}images/privacy.png" alt="">
+                    </li>
+                </ul>
+                <h4 class="index_mf_title">Why privacy?</h4>
+                <p>Because people don't send all their mail on postcards. You deserve privacy, and we are excited to provide you an option.
+                    <span class="attr_link"><a href="http://www.flickr.com/photos/castorgirl/5615283857/lightbox/">attribution</a></p>
+            </div>
+            <div class="index_minifeature">
+                <ul class="thumbnails">
+                    <li class="span6 tn_index" style="width: 100%; margin: 0px;">
+                        <img src="{{ STATIC_URL }}images/simple.png" alt="">
+                    </li>
+                </ul>
+                <h4 class="index_mf_title">Simple</h4>
+                <p>Its pretty simple, but we are working every day to make your privacy simpler.<span class="attr_link">
+                    <a href="http://www.flickr.com/photos/bitzcelt/4787422150/">attribution</a></p>
+            </div>
+
         </div>
 
-        <div class="span6">
-            <h4>Anonymous Accounts</h4>
-            <p>We dont require identifying information, so your account is as anonymous as you wish it to be.</p>
+        <div class="span6" style="text-align: center;">
 
-            <h4>Subheading</h4>
-            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+            <div class="index_minifeature">
+                <ul class="thumbnails">
+                    <li class="span6 tn_index" style="width: 100%; margin: 0px;">
+                        <img src="{{ STATIC_URL }}images/anonymous.png" alt="">
+                    </li>
+                </ul>
+                <h4 class="index_mf_title">Anonymous</h4>
+                <p>We dont require identifying information, so your account is as anonymous as you wish it to be.
+                    <span class="attr_link"><a href="http://www.flickr.com/photos/protoflux/2208369178/">attribution</a></p>
+            </div>
+            <div class="index_minifeature">
+                <ul class="thumbnails">
+                    <li class="span6 tn_index" style="width: 100%; margin: 0px;">
+                        <img src="{{ STATIC_URL }}images/key.png" alt="">
+                    </li>
+                </ul>
+                <h4 class="index_mf_title">Encrypted</h4>
+                <p>e3 1024 bits client side RSA public key encryption. That means that it would take computing years to break your post.
+                    <span class="attr_link"><a href="http://www.flickr.com/photos/ul_marga/755378645/">attribution</a></p>
+            </div>
+            <div class="index_minifeature">
+                <ul class="thumbnails">
+                    <li class="span6 tn_index" style="width: 100%; margin: 0px;">
+                        <img src="{{ STATIC_URL }}images/copycat.png" alt="">
+                    </li>
+                </ul>
+                <h4 class="index_mf_title">Open</h4>
+                <p>Think we are part of a global conspiracy? The entire project is 100% open source, <a href="https://github.com/claytantor/grailo">just fork us.</a>
+                    <span class="attr_link"><a href="http://www.flickr.com/photos/malinky/195771045/">attribution</a></p> </p>
+            </div>
 
-            <h4>Subheading</h4>
-            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+
         </div>
     </div>
-
-    <hr>
-
-    <div class="footer">
-        <p>&copy; Company 2012</p>
-    </div>
+    {% include 'footer.html' %}
 
 </div> <!-- /container -->
-{% include 'footer.html' %}
+
 
 </body>
 </html>

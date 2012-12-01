@@ -6,6 +6,7 @@ import re
 import cStringIO
 from PIL import Image
 
+from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.http import Http404
 from django.shortcuts import render
@@ -20,6 +21,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.middleware import csrf
 
 
 from models import Message, FeedFollowers, Templar,Feed
@@ -197,7 +199,11 @@ def feed(request, feed_id, form_class=MessageForm,
                 template_name="feed.html", success_url=None):
 
     follow_feed = None
-    templar = Templar.objects.get(user=request.user)
+    if request.user.is_authenticated():
+        templar = Templar.objects.get(user=request.user)
+    else :
+        templar = None
+
     feed =  get_object_or_404(Feed, id=feed_id)
     followers_id_list = FeedFollowers.objects.filter(
         feed = feed
@@ -208,13 +214,14 @@ def feed(request, feed_id, form_class=MessageForm,
 
     if request.method == "POST": #save new message
 
-        form = form_class(feed,templar,request.POST)
+        form = form_class(feed, None, templar, request.POST)
 
         if form.is_valid():
             form.save()
             if success_url is None:
                 success_url = reverse('feeds.views.feed',args=(feed_id,) )
                 return HttpResponseRedirect(success_url)
+
     else: #get feed by id
         form = form_class(feed)
 
@@ -228,9 +235,22 @@ def feed(request, feed_id, form_class=MessageForm,
         except ObjectDoesNotExist:
             follow_feed = None
 
+    #figure out messages
+    all_messages = []
+    messages = Message.objects.filter(feed=feed, reply_to=None)
+    for message in messages:
+        dict_message = model_to_dict(message)
+        templar = Templar.objects.get(id=message.templar.id)
+        dict_message['templar'] = templar
+        dict_message['indent'] = 0
+        #recurse
+        all_messages.append(dict_message)
+
     return render_to_response(template_name, {
         "form": form,
         "feed":feed,
+        "messages":messages,
+        "csrf_token_native":csrf.get_token(request),
         "follow_feed":follow_feed,
         "followers":following_templars,
     }, context_instance=RequestContext(request))
@@ -275,12 +295,27 @@ def message(request, message_id,
 def reply_message(request, message_id, form_class=MessageForm,
                   template_name="feed.html", success_url=None):
     templar = Templar.objects.get(user=request.user)
-    message = get_object_or_404(Message, id=message_id)
+    messageReplyTo = get_object_or_404(Message, id=message_id)
 
+    if request.method == "POST": #save new message
+        form = form_class(messageReplyTo.feed,messageReplyTo,templar,request.POST)
+        if form.is_valid():
+            form.saveReply(messageReplyTo)
+            success_url = reverse('feeds.views.feed',args=(messageReplyTo.feed.id,) )
+            return HttpResponseRedirect(success_url)
+        else:
+            return feed(request,messageReplyTo.feed.id)
+    else:
+        form=form_class()
+        return feed(request,messageReplyTo.feed.id)
 
-    return render_to_response(template_name, {
-        "message": message
-    }, context_instance=RequestContext(request))
+@login_required
+def delete_message(request, message_id, form_class=MessageForm,
+                   template_name="feed.html", success_url=None):
+    message_delete = get_object_or_404(Message, id=message_id)
+    feed_id =  message_delete.feed.id
+    message_delete.delete()
+    return feed(request,feed_id)
 
 def avatar_png(request, uname):
     templar = Templar.objects.get(user__username=uname)
@@ -292,106 +327,4 @@ def avatar_png(request, uname):
     img.save(response, "PNG")
     return response
 
-
-
-
-#@login_required
-#def personal(request, form_class=MessageForm,
-#             template_name="personal.html", success_url=None):
-#    """
-#    just the messages the current user is following
-#    """
-#    #grailo_account = grailo_account_for_user(request.user)
-#    twitter_authorized = None
-#
-#    if request.method == "POST":
-#        form = form_class(request.user, request.POST)
-#        if form.is_valid():
-#            text = form.cleaned_data['text']
-#            form.save()
-#            if success_url is None:
-#                success_url = reverse('feeds.views.personal')
-#            return HttpResponseRedirect(success_url)
-#        reply = None
-#    else:
-#        reply = request.GET.get("reply", None)
-#        form = form_class()
-#        if reply:
-#            form.fields['text'].initial = u"@%s " % reply
-#    messages = MessageInstance.objects.messages_for(request.user).order_by("-sent")
-#    return render_to_response(template_name, {
-#        "form": form,
-#        "reply": reply,
-#        "messages": messages,
-#        "twitter_authorized": False,
-#        }, context_instance=RequestContext(request))
-#
-#
-#def public(request, template_name="public.html"):
-#    """
-#    all the messages
-#    """
-#    messages = Message.objects.all().order_by("-sent")
-#
-#    return render_to_response(template_name, {
-#        "messages": messages,
-#        }, context_instance=RequestContext(request))
-#
-#def single(request, id, template_name="single.html"):
-#    """
-#    A single message.
-#    """
-#    message = get_object_or_404(Message, id=id)
-#    return render_to_response(template_name, {
-#        "message": message,
-#        }, context_instance=RequestContext(request))
-#
-#
-#def _follow_list(request, other_user, follow_list, template_name):
-#    # the only difference between followers/following views is template
-#    # this function captures the similarity
-#
-#    return render_to_response(template_name, {
-#        "other_user": other_user,
-#        "follow_list": follow_list,
-#        }, context_instance=RequestContext(request))
-#
-#def followers(request, username, template_name="followers.html"):
-#    """
-#    a list of users following the given user.
-#    """
-#    other_user = get_object_or_404(User, username=username)
-#    users_followers = Following.objects.filter(followed_object_id=other_user.id, followed_content_type=ContentType.objects.get_for_model(other_user))
-#    follow_list = [u.follower_content_object for u in users_followers]
-#    return _follow_list(request, other_user, follow_list, template_name)
-#
-#def following(request, username, template_name="following.html"):
-#    """
-#    a list of users the given user is following.
-#    """
-#    other_user = get_object_or_404(User, username=username)
-#    following = Following.objects.filter(follower_object_id=other_user.id, follower_content_type=ContentType.objects.get_for_model(other_user))
-#    follow_list = [u.followed_content_object for u in following]
-#    return _follow_list(request, other_user, follow_list, template_name)
-#
-#def toggle_follow(request, username):
-#    """
-#    Either follow or unfollow a user.
-#    """
-#    other_user = get_object_or_404(User, username=username)
-#    if request.user == other_user:
-#        is_me = True
-#    else:
-#        is_me = False
-#    if request.user.is_authenticated() and request.method == "GET" and not is_me:
-#        if request.GET["action"] == "follow":
-#            Following.objects.follow(request.user, other_user)
-#            #request.user.message_set.create(message=_("You are now following %(other_user)s") % {'other_user': other_user})
-#            #if notification:
-#            #    notification.send([other_user], "message_follow", {"user": request.user})
-#        elif request.GET["action"] == "unfollow":
-#            Following.objects.unfollow(request.user, other_user)
-##            request.user.message_set.create(message=_("You have stopped following %(other_user)s") % {'other_user': other_user})
-#
-#    return HttpResponseRedirect(reverse("profile_detail", args=[other_user]))
 

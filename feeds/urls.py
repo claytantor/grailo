@@ -17,11 +17,13 @@ urlpatterns = patterns('',
     url(r'^register.html', 'feeds.views.register', name='register'),
     url(r'^feeds.html', 'feeds.views.templar_feeds', name='templar_feeds'),
 
+
     #id based views
     url(r'^feed/(\w+)/$', 'feeds.views.feed', name='feed'),
     url(r'^profile/(\w+)/$', 'feeds.views.profile_detail', name='profile_detail'),
     url(r'^message/(\w+)/$', 'feeds.views.message', name='message'),
     url(r'^reply/(\w+)/$', 'feeds.views.reply_message', name='reply_message'),
+    url(r'^delete/(\w+)/$', 'feeds.views.delete_message', name='delete_message'),
 
     #user image
     url(r'^avatar/(\w+).png', 'feeds.views.avatar_png', name='avatar'),

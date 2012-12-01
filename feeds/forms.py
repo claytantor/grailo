@@ -11,7 +11,7 @@ class RegisterForm(forms.Form):
     public_key = forms.CharField(max_length=250,widget=forms.HiddenInput())
     pw_encrypted = forms.CharField(max_length=512,widget=forms.HiddenInput())
     pw_unencrypted = forms.CharField(max_length=128,widget=forms.HiddenInput())
-    avatar_img = forms.CharField(max_length=16000,widget=forms.HiddenInput())
+    avatar_img = forms.CharField(max_length=20000,widget=forms.HiddenInput())
 
 class FeedForm(forms.ModelForm):
     title = forms.CharField(
@@ -47,13 +47,24 @@ class MessageForm(forms.ModelForm):
         model = Message
         exclude = ('sent')
 
-    def __init__(self, feed=None, templar=None, *args, **kwargs):
+    def __init__(self, feed=None, reply_to=None, templar=None, *args, **kwargs):
         self.feed = feed
+        self.reply_to=reply_to
         self.templar = templar
         super(MessageForm, self).__init__(*args, **kwargs)
 
     def clean_text(self):
         return self.cleaned_data['text'].strip()
+
+    def saveReply(self,reply_to):
+        text = self.cleaned_data["text"]
+        message_instance = super(MessageForm, self).save(commit=False)
+        message_instance.feed = self.feed
+
+        message_instance.reply_to = reply_to
+        message_instance.templar = self.templar
+
+        message_instance.save()
 
     def save(self):
         text = self.cleaned_data["text"]
@@ -62,3 +73,6 @@ class MessageForm(forms.ModelForm):
         message_instance.templar = self.templar
 
         message_instance.save()
+
+class ReplyForm(forms.Form):
+    text = forms.CharField(max_length=512,widget=forms.HiddenInput())

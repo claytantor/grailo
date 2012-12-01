@@ -18,7 +18,7 @@ The following articles have influenced decisions we have made and we think are i
 * [django-microblogging](https://github.com/skabber/django-microblogging/tree/master/microblogging) - simple microblogging
 * [django-friends](https://github.com/jtauber/django-friends) - friendship, contact and invitation management for the Django web framework
 
-#Thigs we do before we commit
+#Things we do before we commit
 
 1. $ pip freeze > requirements.txt
 2. update example settings

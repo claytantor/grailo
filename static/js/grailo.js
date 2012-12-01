@@ -38,14 +38,18 @@ function decryptMessageHandler(event,ui) {
     if($('#private_key').val()){
         $('#errors_area').html('');
 
-        var cipherText = $(this).data('message-encrypted');
+        //for all messages under
+        $(this).parent().find('.message-encrypted').each(function(index,item){
+            var cipherText = $(this).val();
 
-        var rsaKey = cryptico.generateRSAKey($('#private_key').val(), 1024);
-        var decryptionResult = cryptico.decrypt(cipherText, rsaKey);
-        $(this).siblings('.message').find('.message_text').html(decryptionResult.plaintext);
+            var rsaKey = cryptico.generateRSAKey($('#private_key').val(), 1024);
+            var decryptionResult = cryptico.decrypt(cipherText, rsaKey);
+            $(this).siblings('.message').find('.message_text').html(decryptionResult.plaintext);
 
-        $(message_img_clicked).find('img').attr("src",event.data.unlock_img);
-        $(message_img_clicked).unbind('click');
+            $(message_img_clicked).find('img').attr("src",event.data.unlock_img);
+            $(message_img_clicked).unbind('click');
+
+        });
 
 
     } else {
@@ -58,11 +62,29 @@ function decryptMessageHandler(event,ui) {
 
 function replyMessageHandler(event,ui) {
     var message_reply_clicked = event.data.message_reply_clicked;
-    var model = {};
-    $(message_reply_clicked).parent().siblings('.message_reply_form').html(
-        Mustache.render('<div><span class="label">Will be saved on server as encrypted text.</span>' +
-            '<textarea rows="4" wrap="hard" style="width:100%;" id="message_unencrypted" ' +
-            'placeholder="Enter reply..."></textarea><br><a href="" class="btn btn-primary">Save reply</a></div>',model));
+    var model = {
+        reply_url:event.data.reply_url,
+        csrf_token:event.data.csrf_token
+    };
+    var reply_form = $(Mustache.render('<div id="reply_form_area"><span class="label">Will be saved on server as encrypted text.</span>' +
+        '<textarea rows="4" wrap="hard" style="width:100%;" id="message_unencrypted" ' +
+        'placeholder="Enter reply..."></textarea><br><form action="{{ reply_url }}" method="post">' +
+        '<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>'+
+        '<input type="hidden" name="text" id="id_text"/>'+
+        '<button href="#" type="submit" class="btn btn-primary" style="display:none;">Save reply</button>'+
+        '<a href="#" class="btn btn-primary btn_reply_submit">Save reply</a></form></div>',model));
+
+    $(message_reply_clicked).parent().siblings('.message_reply_form').html(reply_form);
+
+    $(reply_form).find('.btn_reply_submit').click(function(event,ui){
+        var message_unencrypted = $(this).parent().parent().find('#message_unencrypted').val();
+        var cypher = cryptico.encrypt(message_unencrypted, $('#feed_title_area').data('public-key')).cipher;
+
+        $(this).parent().find('#id_text').val(cypher);
+        $(this).parent().submit();
+        return false;
+    });
+
     return false;
 }
 

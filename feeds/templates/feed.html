@@ -43,8 +43,13 @@
         });
 
         $('.message_link_reply').each(function(index, item){
+
             $(this).bind('click',
-                    {message_reply_clicked:this},
+                    {
+                        message_reply_clicked:this,
+                        csrf_token:'{{ csrf_token_native }}',
+                        reply_url:$(this).data('message-url')
+                    },
                     replyMessageHandler);
         });
 
@@ -88,17 +93,19 @@
             {% include 'sidebar.html' %}
         </div><!--/span-->
         <div class="span10">
-            <div id="feed_title_area" class="feed_title_area" data-public-key="{{ feed.public_key }}">
-                {% if request.user.is_authenticated %}
-                    {% if follow_feed %}
-                        <a href="#" id="follow_feed_toggle" data-follow-toggle="off">
-                            <img src="{{ STATIC_URL }}images/following.png" width="32" height="32"/>&nbsp;<span style="font-size: 0.5em;font-weight: normal" id="follow_text">Following</span></a>
-                    {% else %}
-                        <a href="#" id="follow_feed_toggle" data-follow-toggle="on">
-                        <img src="{{ STATIC_URL }}images/follow_disabled.png" width="32" height="32"/>&nbsp;<span style="font-size: 0.5em;font-weight: normal" id="follow_text">Follow</span></a>
+            <div id="feed_title_area" class="row-fluid feed_title_area" data-public-key="{{ feed.public_key }}" style="display: inline; margin-bottom: 10px;">
+                <div class="feed_title span7" style="display: inline-block; height: 50px;">{{ feed.title }} by <a href="{% url feeds.views.profile_detail feed.owner.user.username  %}">{{ feed.owner.user.username }}</a></div>
+                <div class="span4" style="display: inline-block;text-align: right;">
+                    {% if request.user.is_authenticated  and  feed.owner.user.username != request.user.username%}
+                        {% if follow_feed %}
+                            <a href="#" id="follow_feed_toggle" data-follow-toggle="off">
+                                <span style="font-size: 0.5em;font-weight: normal" id="follow_text">Following</span><img src="{{ STATIC_URL }}images/following.png" width="32" height="32"/></a>
+                        {% else %}
+                            <a href="#" id="follow_feed_toggle" data-follow-toggle="on">
+                                <span style="font-size: 0.5em;font-weight: normal" id="follow_text">Follow</span><img src="{{ STATIC_URL }}images/follow_disabled.png" width="32" height="32"/></a>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                <span class="feed_title">{{ feed.title }} by <a href="{% url feeds.views.profile_detail feed.owner.user.username  %}">{{ feed.owner.user.username }}</a></span>
+                </div>
             </div>
             <div class="row-fluid">
                 <div id="errors_area" style="display: none;">
