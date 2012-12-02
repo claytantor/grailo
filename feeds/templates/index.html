@@ -50,8 +50,7 @@
             <li class="active"><a href="index.html">Index</a></li>
             {% if not request.user.is_authenticated %}<li><a href="home.html">Login</a></li>{% endif %}
             {% if request.user.is_authenticated %}<li><a href="home.html">Home</a></li>{% endif %}
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="about.html">About</a></li>
             {% if request.user.is_authenticated %}<li><a href="logout.html">Logout</a></li>{% endif %}
         </ul>
         <h3 class="muted"><a href="{% url site_landing %}"><img src="{{ STATIC_URL }}images/grailo_logo_all.png"></a></h3>

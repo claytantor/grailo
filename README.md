@@ -9,6 +9,7 @@ The following projects heavily influenced this project and may have code include
 We stand on the sholders of giants.
 
 * [cryptico](https://github.com/claytantor/cryptico) - Javascript public/private key encryption.
+* [Alien Avatar Generator](https://github.com/TimPietrusky/alien-avatar-generator)
 * [django-icanhaz ](https://github.com/carljm/django-icanhaz) - Mustache.js template fixes
 
 #Interesting Articles#
@@ -17,6 +18,7 @@ The following articles have influenced decisions we have made and we think are i
 * [Simple Authentication Backend](http://www.djangorocks.com/tutorials/creating-a-custom-authentication-backend/creating-a-simple-authentication-backend.html)
 * [django-microblogging](https://github.com/skabber/django-microblogging/tree/master/microblogging) - simple microblogging
 * [django-friends](https://github.com/jtauber/django-friends) - friendship, contact and invitation management for the Django web framework
+* [HTTPS Strict Transport Security](http://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security)
 
 #Things we do before we commit
 
@@ -37,3 +39,4 @@ Type: t1.micro	State: running
     sudo vi /home/bitnami/apps/django/conf/grailo.conf
     sudo /opt/bitnami/ctlscript.sh restart apache
 ```
+

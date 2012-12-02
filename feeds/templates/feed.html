@@ -93,8 +93,8 @@
             {% include 'sidebar.html' %}
         </div><!--/span-->
         <div class="span10">
-            <div id="feed_title_area" class="row-fluid feed_title_area" data-public-key="{{ feed.public_key }}" style="display: inline; margin-bottom: 10px;">
-                <div class="feed_title span7" style="display: inline-block; height: 50px;">{{ feed.title }} by <a href="{% url feeds.views.profile_detail feed.owner.user.username  %}">{{ feed.owner.user.username }}</a></div>
+            <div id="feed_title_area" class="row-fluid feed_title_area" data-public-key="{{ feed.public_key }}" style="display: block; margin-bottom: 10px;">
+                <div class="feed_title span6" style="display: inline-block; height: 50px;">{{ feed.title }} by <a href="{% url feeds.views.profile_detail feed.owner.user.username  %}">{{ feed.owner.user.username }}</a></div>
                 <div class="span4" style="display: inline-block;text-align: right;">
                     {% if request.user.is_authenticated  and  feed.owner.user.username != request.user.username%}
                         {% if follow_feed %}
